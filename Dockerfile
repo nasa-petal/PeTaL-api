@@ -10,10 +10,12 @@ COPY package*.json ./
 RUN npm install
 
 # https://medium.com/better-programming/docker-in-development-with-nodemon-d500366e74df
-RUN npm install -g nodemon
+#RUN npm install -g nodemon
 
 # Bundle app source
 COPY . .
 
 EXPOSE 8080
-CMD [ "nodemon", "server.js" ]
+CMD [ "node", "server.js" ]
+# use this to auto restart node server on code changes in development. also uncomment line 13.
+#CMD [ "nodemon", "server.js" ]

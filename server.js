@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const wiki = require('wikijs').default;
 
 // Constants
 const PORT = 8080;
@@ -16,7 +17,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/', (req, res) => {
+app.get('/v1/functions', (req, res) => {
   res.json(
     [
       { label: 'Reduce drag', id: 1 },
@@ -26,6 +27,13 @@ app.get('/', (req, res) => {
       { label: 'Remove particles from a surface', id: 5 }
     ]
   );
+});
+
+app.get('/v1/search', (req, res) => {
+  // ?q=1 where 1 is a function id.
+  // get all wikipedia article ids that have that function id assigned.
+  // use wikijs to query the wikipedia api and return article titles and summaries to display on the client.
+  wiki().findById(44386495).then(page => res.json([{title: page.raw.title}]));
 });
 
 app.listen(PORT, HOST);
