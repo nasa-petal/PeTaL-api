@@ -9,8 +9,11 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
+# https://medium.com/better-programming/docker-in-development-with-nodemon-d500366e74df
+RUN npm install -g nodemon
+
 # Bundle app source
 COPY . .
 
 EXPOSE 8080
-CMD [ "node", "server.js" ]
+CMD [ "nodemon", "server.js" ]
