@@ -29,12 +29,5 @@ app.get('/v1/functions', (req, res) => {
   );
 });
 
-app.get('/v1/search', (req, res) => {
-  // ?q=1 where 1 is a function id.
-  // get all wikipedia article ids that have that function id assigned.
-  // use wikijs to query the wikipedia api and return article titles and summaries to display on the client.
-  wiki().findById(44386495).then(page => res.json([{title: page.raw.title}]));
-});
-
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
