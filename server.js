@@ -33,7 +33,29 @@ app.get('/v1/search', (req, res) => {
   // ?q=1 where 1 is a function id.
   // get all wikipedia article ids that have that function id assigned.
   // use wikijs to query the wikipedia api and return article titles and summaries to display on the client.
-  wiki().findById(44386495).then(page => res.json([{title: page.raw.title}]));
+  //wiki().findById(44386495).then(page => res.json([{title: page.raw.title}]));
+
+  //wiki().page('Category:Passerella').then(page => console.log(page)).catch(error => console.log(error));
+  
+
+
+  wiki().pagesInCategory('Category:American_sparrows')
+    .then(pagesTitles => {
+      //wiki().page(pageTitles[0]).then(function(page) {console.log(page)}).catch(error => console.log('1 ' + pageTitle + ' ' + error));
+
+      var promises = [];
+      for (var pageTitle of pageTitles) {
+        promises.push(wiki().page(pageTitle).then(function(page) {console.log(page)}).catch(error => console.log('1 ' + pageTitle + ' ' + error)));
+      }
+      //console.log(promises);
+      Promise.all(promises).then(function(pages) {
+        console.log(pages);
+        var page;
+        for (page of pages) {
+          console.log(page);
+        }
+      }).catch(error => console.log('2 ' + error));
+    });
 });
 
 app.listen(PORT, HOST);
