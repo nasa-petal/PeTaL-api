@@ -8,7 +8,7 @@ PeTaL is comprised of multiple interconnected services. This repository is for t
 
 clone this repo
 
-run locally
+run locally    
 `npm install`    
 `npm start`    
 `curl -i localhost:8080`
