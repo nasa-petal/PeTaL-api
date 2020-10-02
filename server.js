@@ -29,6 +29,7 @@ app.get('/v1/functions', (req, res) => {
   );
 });
 
+<<<<<<< HEAD
 app.get('/v1/search', (req, res) => {
   // ?q=1 where 1 is a function id.
   // get all wikipedia article ids that have that function id assigned.
@@ -58,5 +59,7 @@ app.get('/v1/search', (req, res) => {
     });
 });
 
+=======
+>>>>>>> master
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
