@@ -35,8 +35,9 @@ app.get('/v1/search', (req, res) => {
   // get all wikipedia article ids that have that function id assigned.
   // use wikijs to query the wikipedia api and return article titles and summaries to display on the client.
 
+  // Fixes an error: https://github.com/dijs/wiki/issues/136
   var headers = { headers: { 'User-Agent': 'server.js (https://github.com/nasa/petal-api; bruffridge@nasa.gov) wiki.js' } }
-  var tempPages;
+  var tempPages, tempImages;
   var articles = [];
 
   wiki(headers).pagesInCategory('Category:American_sparrows')
@@ -45,7 +46,11 @@ app.get('/v1/search', (req, res) => {
   )
   .then(pages => {
     tempPages = pages;
-    return getSummaries(pages);
+    return getImages(pages);
+  })
+  .then(images => {
+    tempImages = images;
+    return getSummaries(tempPages);
   })
   .then(summaries => {
     var i = 0;
@@ -54,6 +59,7 @@ app.get('/v1/search', (req, res) => {
         id: page.raw.pageid,
         url: page.raw.fullurl,
         title: page.raw.title,
+        image: tempImages[i],
         summary: summaries[i]
       }
       articles.push(article);
@@ -76,6 +82,14 @@ app.get('/v1/search', (req, res) => {
     var promises = [];
     for (var page of pages) {
       promises.push(page.summary());
+    }
+    return Promise.all(promises);
+  }
+
+  function getImages(pages) {
+    var promises = [];
+    for (var page of pages) {
+      promises.push(page.mainImage());
     }
     return Promise.all(promises);
   }
