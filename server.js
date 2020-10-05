@@ -9,7 +9,7 @@ const { Client } = require('pg')
 const PORT = 8080;
 const HOST = '0.0.0.0';
 const clientConn = {
-  user: 'postgres',
+  user: 'petal_admin',
   host: 'localhost',
   database: 'petal',
   password: 'mysecretpassword',
