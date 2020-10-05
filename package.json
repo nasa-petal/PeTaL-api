@@ -9,6 +9,7 @@
   "author": "",
   "dependencies": {
     "express": "^4.17.1",
+    "pg": "^8.4.0",
     "wikijs": "^6.0.1"
   }
 }

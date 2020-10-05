@@ -3,10 +3,18 @@
 const { urlencoded } = require('express');
 const express = require('express');
 const wiki = require('wikijs').default;
+const { Client } = require('pg')
 
 // Constants
 const PORT = 8080;
 const HOST = '0.0.0.0';
+const clientConn = {
+  user: 'postgres',
+  host: 'localhost',
+  database: 'petal',
+  password: 'mysecretpassword',
+  port: 5432,
+}
 
 // App
 const app = express();
@@ -19,15 +27,18 @@ app.use(function(req, res, next) {
 });
 
 app.get('/v1/functions', (req, res) => {
-  res.json(
-    [
-      { label: 'Reduce drag', id: 1 },
-      { label: 'Absorb shock', id: 2 },
-      { label: 'Dissipate heat', id: 3 },
-      { label: 'Increase lift', id: 4 },
-      { label: 'Remove particles from a surface', id: 5 }
-    ]
-  );
+  var client = new Client(clientConn);
+  client.connect()
+  client.query('SELECT * FROM functions', (err, result) => {
+    client.end()
+    if(err) {
+      console.log(err.stack);
+      res.json({error: true});
+    }
+    else {
+      res.json(result.rows);
+    }
+  })
 });
 
 app.get('/v1/search', (req, res) => {
