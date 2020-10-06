@@ -1,6 +1,6 @@
 'use strict';
 
-const { urlencoded } = require('express');
+const { urlencoded, response } = require('express');
 const express = require('express');
 const wiki = require('wikijs').default;
 
@@ -17,6 +17,8 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+app.use(express.json());
 
 app.get('/v1/functions', (req, res) => {
   res.json(
@@ -94,6 +96,14 @@ app.get('/v1/search', (req, res) => {
     return Promise.all(promises);
   }
 });
+
+app.post('/api', (request, response) => {
+  console.log('got it');
+  console.log(request.body);
+  response.json({
+    status: 'success'
+  });
+})
 
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);
