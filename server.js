@@ -50,6 +50,7 @@ app.get('/v1/search', (req, res) => {
   var er = /^[0-9]+$/;
   if(!er.test(label_id)) {
     res.json({error: true});
+    return;
   }
 
   var client = new Client(clientConn);
@@ -59,6 +60,7 @@ app.get('/v1/search', (req, res) => {
     if(err) {
       console.log(err.stack);
       res.json({error: true});
+      return;
     }
     else {
       getWikiArticles(result.rows);
