@@ -11,7 +11,7 @@ clone this repo
 option 1: run locally (easiest)    
 `npm install`    
 `npm start`    
-`curl -i localhost:8080`
+`curl -i localhost:8080/v1/functions`
 
 option 2: run in docker container    
 `docker build -t petal-api .`    
