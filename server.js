@@ -29,7 +29,7 @@ app.use(function(req, res, next) {
 app.get('/v1/functions', (req, res) => {
   var client = new Client(clientConn);
   client.connect()
-  client.query('SELECT * FROM functions', (err, result) => {
+  client.query('SELECT * FROM Label', (err, result) => {
     client.end()
     if(err) {
       console.log(err.stack);
@@ -46,49 +46,68 @@ app.get('/v1/search', (req, res) => {
   // get all wikipedia article ids that have that function id assigned.
   // use wikijs to query the wikipedia api and return article titles and summaries to display on the client.
 
+  var label_id = req.query.q;
+  var er = /^[0-9]+$/;
+  if(!er.test(label_id)) {
+    res.json({error: true});
+  }
+
+  var client = new Client(clientConn);
+  client.connect()
+  client.query('SELECT article_id FROM Wikipedia_Label WHERE label_id = $1', [label_id], (err, result) => {
+    client.end()
+    if(err) {
+      console.log(err.stack);
+      res.json({error: true});
+    }
+    else {
+      getWikiArticles(result.rows);
+    }
+  })
+
   // Fixes an error: https://github.com/dijs/wiki/issues/136
   var headers = { headers: { 'User-Agent': 'server.js (https://github.com/nasa/petal-api; bruffridge@nasa.gov) wiki.js' } }
-  var tempPages, tempImages;
-  var articles = [];
 
-  wiki(headers).pagesInCategory('Category:American_sparrows')
-  .then(pageTitles =>
-    getPages(pageTitles)
-  )
-  .then(pages => {
-    tempPages = pages;
-    return getImages(pages);
-  })
-  .then(images => {
-    tempImages = images;
-    return getSummaries(tempPages);
-  })
-  .then(summaries => {
-    var i = 0;
-    for (var page of tempPages) {
-      var article = {
-        id: page.raw.pageid,
-        url: page.raw.fullurl,
-        title: page.raw.title,
-        image: tempImages[i],
-        summary: summaries[i]
+  function getWikiArticles(article_ids) {
+    var tempPages, tempImages;
+    var articles = [];
+
+    getPages(article_ids)
+    .then(pages => {
+      tempPages = pages;
+      return getImages(pages);
+    })
+    .then(images => {
+      tempImages = images;
+      return getSummaries(tempPages);
+    })
+    .then(summaries => {
+      var i = 0;
+      for (var page of tempPages) {
+        var article = {
+          id: page.raw.pageid,
+          url: page.raw.fullurl,
+          title: page.raw.title,
+          image: tempImages[i],
+          summary: summaries[i]
+        }
+        articles.push(article);
+        i++;
       }
-      articles.push(article);
-      i++;
-    }
-    res.json(articles);
-  })
-  .catch(error => console.log(error));
+      res.json(articles);
+    })
+    .catch(error => console.log(error));
+  }
 
-  function getPages(pageTitles) {
+  function getPages(pageIds) {
     var promises = [];
     //var articles = [];
-    for (var pageTitle of pageTitles) {
-      promises.push(wiki(headers).page(pageTitle));
+    for (var article of pageIds) {
+      promises.push(wiki(headers).findById(article.article_id));
     }
     return Promise.all(promises);
   }
-
+  
   function getSummaries(pages) {
     var promises = [];
     for (var page of pages) {
