@@ -69,17 +69,13 @@ app.get('/v1/search', (req, res) => {
     res.json(stubArticles);
     return;
   }
-  console.log(req.query)
   var label_id = req.query.q;
-  console.log(label_id)
   var er = /^[0-9]+$/;
   if(!er.test(label_id)) {
     res.json({error: true});
     return;
   }
-
   
-
   var client = new Client(clientConn);
   client.connect()
   client.query('SELECT article_id FROM Wikipedia_Label WHERE label_id = $1', [label_id], (err, result) => {
