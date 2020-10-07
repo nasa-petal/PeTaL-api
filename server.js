@@ -69,13 +69,16 @@ app.get('/v1/search', (req, res) => {
     res.json(stubArticles);
     return;
   }
-
+  console.log(req.query)
   var label_id = req.query.q;
+  console.log(label_id)
   var er = /^[0-9]+$/;
   if(!er.test(label_id)) {
     res.json({error: true});
     return;
   }
+
+  
 
   var client = new Client(clientConn);
   client.connect()
@@ -152,8 +155,8 @@ app.get('/v1/search', (req, res) => {
 });
 
 app.post('/api', (request, response) => {
-  console.log('got it');
-  console.log(request.body);
+  //console.log('got it');
+  //console.log(request.body);
   response.json({
     status: 'success'
   });
