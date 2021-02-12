@@ -1,3 +1,6 @@
+# ARCHIVED - The API definition is now combined with the database in this repo: https://github.com/nasa-petal/PeTaL-db 
+
+
 # PeTaL (Periodic Table of Life) API
 
 The Periodic Table of Life (PeTaL, pronounced petal) is a design tool aimed at allowing users to seemlesly move from ideas (from nature or other sources) to design.
